@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Page</title>
+</head>
+<body>
+  <h1>Hello World</h1>
+  <p>Your content here...</p>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title id="browserPageTitle">Juwel Online Shop - Global Multi-Vendor & Web Portal</title>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<style>
+:root{--primary:#0969da;--bg:#f4f6f8;--card-bg:#fff;--text:#1f2328;--border:#d0d7de}
+body{font-family:Arial,sans-serif;margin:0;padding:10px;background:var(--bg);color:var(--text)}
+.container{max-width:1100px;margin:0 auto}
+.top-contact-bar{background:#0d1117;color:#fff;padding:6px 15px;border-radius:6px 6px 0 0;display:flex;justify-content:space-between;align-items:center;font-size:12px;flex-wrap:wrap;gap:10px}
+.top-contact-bar a{color:#58a6ff;text-decoration:none;font-weight:bold}
+header{background:var(--card-bg);padding:12px 15px;border-radius:0 0 8px 8px;box-shadow:0 2px 5px rgba(0,0,0,.05);display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:10px}
+.brand-logo-area{display:flex;align-items:center;gap:10px}
+.brand-logo-area img{width:40px;height:40px;object-fit:contain;border-radius:4px;border:1px solid var(--border);background:#fff}
+.controls{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.controls select,.controls button{padding:7px 10px;border:1px solid var(--border);border-radius:5px;background:#fff;cursor:pointer;font-weight:bold;font-size:13px}
+.card{background:var(--card-bg);padding:15px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.05);margin-bottom:12px}
+.btn-seller{background:#8250df!important;color:#fff!important;border:none!important}
+.btn-webportal{background:#0969da!important;color:#fff!important;border:none!important}
+.btn-apk{background:#1f883d!important;color:#fff!important;border:none!important}
+.btn-danger{background:#cf222e;color:#fff;border:none;cursor:pointer;padding:4px 8px;border-radius:4px;font-size:12px}
+.btn{border:none;border-radius:4px;cursor:pointer;font-weight:bold;color:#fff;padding:7px 14px;font-size:13px}
+.g{background:#238636}.b{background:#0969da}.p{background:#8250df}.x{background:#6e7681}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:999;justify-content:center;align-items:center;overflow-y:auto;padding:10px;box-sizing:border-box}
+.modal-box{background:#161b22;color:#fff;padding:15px;border-radius:8px;text-align:center;width:100%;max-width:600px;max-height:95vh;overflow-y:auto;box-sizing:border-box}
+.ad-box{background:#000;width:100%;height:320px;border-radius:6px;margin:10px 0;display:flex;align-items:center;justify-content:center;border:1px solid #333;position:relative;color:#888}
+.ad-timer{position:absolute;bottom:12px;right:15px;background:rgba(0,0,0,.8);padding:5px 14px;border-radius:20px;font-size:13px;color:#fff;font-weight:bold}
+.modal-box input,.modal-box select{width:90%;padding:10px;margin:8px 0;text-align:center;font-size:15px;border-radius:4px;border:1px solid #30363d;background:#0d1117;color:#fff;box-sizing:border-box}
+.modal-box .btn{width:100%;margin-top:6px;padding:10px 18px}
+table{width:100%;border-collapse:collapse;margin:8px 0 12px}
+th,td{border:1px solid var(--border);padding:7px;text-align:left;font-size:13px}
+th{background:#f6f8fa}
+.hidden{display:none!important}
+.product-display-card{border:1px solid var(--border);padding:12px;border-radius:6px;background:#fafbfc;text-align:center}
+.product-display-card img{max-width:100%;height:120px;object-fit:contain;margin-bottom:6px;background:#fff;border:1px solid #eee}
+.sec{padding:12px;border-radius:6px;margin-bottom:15px;border:1px solid #86efac;background:#f0fdf4}
+.sec h4{margin:0 0 6px;font-size:13px}
+.sec .box{max-height:150px;overflow-y:auto;background:#fff;padding:6px;border:1px solid #bbf7d0;font-size:11px}
+.sec label{font-size:11px;font-weight:bold;display:block;margin:6px 0 3px}
+.sec input,.sec textarea{width:100%;padding:6px;font-size:11px;border:1px solid #ccc;border-radius:4px;box-sizing:border-box}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+#cookieConsentBanner{position:fixed;bottom:0;left:0;width:100%;background:#161b22;color:#e6edf3;border-top:2px solid #30363d;z-index:99999;padding:15px 20px;box-sizing:border-box;display:none;align-items:center;justify-content:space-between;gap:15px;font-size:13px}
+.cust-in{flex:1;padding:7px}
+</style>
+</head>
+<body>
+
+<div id="globalWelcomeAdModal" class="modal" style="display:flex">
+<div class="modal-box">
+<div class="ad-box"><h3>📢 Platform Opening Sponsored Advertisement</h3><div id="welcomeAdTimerDisplay" class="ad-timer">10s</div></div>
+<button id="welcomeActionContinueBtn" class="btn g hidden" onclick="closeGlobalWelcomeModal()">Continue to App</button>
+</div></div>
+
+<div class="container">
+<div class="top-contact-bar">
+<div><b>📞 Master Business Direct Support:</b></div>
+<div style="display:flex;gap:12px;flex-wrap:wrap">
+<a id="hdrClickCall" href="tel:"><span id="hdrPhoneText">📞 Call: --</span></a>
+<a id="hdrClickWhatsapp" href="#" target="_blank"><span id="hdrWhatsappText">🟢 WhatsApp: --</span></a>
+<a id="hdrClickEmail" href="mailto:"><span id="hdrEmailText">📧 Email: --</span></a>
+</div></div>
+
+<header>
+<div class="brand-logo-area"><img id="appHeaderLogoImg" src="https://via.placeholder.com/40" alt="Logo"><h3 id="appHeaderTitleText" style="margin:0">Juwel Online Shop</h3></div>
+<div class="controls">
+<select id="currencySelector" onchange="changeCurrency(this.value)"><option value="USD">$ USD</option><option value="BDT">৳ BDT</option></select>
+<button onclick="downloadAppApk()" class="btn-apk">📱 APK</button>
+<button onclick="openSellerModal('SELLER')" class="btn-seller" id="btnSellerNav">🏬 Seller Portal</button>
+<button onclick="openSellerModal('WEBSITE')" class="btn-webportal" id="btnWebPortalNav">🌐 Website Portal</button>
+</div>
+</header>
+
+<section id="publicSalesPage" class="card">
+<h3 style="font-size:16px;margin-top:5px" id="txtCatalogTitle">🛒 Global Product Catalog & Order</h3>
+<div style="background:#e7f5ff;padding:12px;border-radius:8px;border:1px solid #bbe1fa;margin-bottom:15px">
+<div id="customerAuthArea">
+<h4 style="margin-top:0;color:#0969da;font-size:14px" id="txtCustProfileTitle">👤 Secure Customer Profile</h4>
+<div id="custLoginForm">
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+<input type="text" id="authCustName" placeholder="Your Name" class="cust-in">
+<input type="text" id="authCustPhone" placeholder="Mobile Number (Login ID)" class="cust-in">
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+<select id="authCustCountry" class="cust-in"><option value="Bangladesh">🇧🇩 Bangladesh (Local)</option><option value="India">🇮🇳 India</option><option value="Global">🌐 Other International</option></select>
+<input type="password" id="authCustPin" placeholder="Secret PIN (e.g., 1234)" class="cust-in">
+</div>
+<textarea id="authCustAddress" placeholder="Permanent Delivery Address..." rows="2" style="width:100%;padding:7px;margin-bottom:8px;box-sizing:border-box"></textarea>
+<button onclick="authenticateCustomer()" class="btn b">Login / Register</button>
+</div>
+<div id="custDashboard" class="hidden">
+<h4 style="margin:0;color:#1a7f37;font-size:14px">Welcome: <span id="loggedInCustName" style="color:#0969da"></span> | 🆔 Customer ID: <span id="loggedInCustIdDisplay" style="color:#c2410c"></span></h4>
+<button onclick="logoutCustomer()" class="btn-danger" style="margin-top:4px">Logout</button>
+</div>
+</div></div>
+
+<div id="productCatalog" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:15px"></div>
+
+<div style="background:#f8f9fa;padding:12px;border-radius:8px;border:1px solid var(--border)">
+<h4 style="margin-top:0;color:#0969da;font-size:14px">🛒 Shopping Cart</h4>
+<table><thead><tr><th>Product Name</th><th>Qty</th><th>Price</th><th>Total</th><th>Action</th></tr></thead>
+<tbody id="cartTableBody"><tr><td colspan="5" style="text-align:center;color:#777">Your cart is empty.</td></tr></tbody></table>
+<div style="text-align:right;margin-top:8px;font-size:13px">
+<p style="color:#c2410c;margin:0 0 4px"><b>Note:</b> Delivery charge will be borne by the buyer via Courier.</p>
+<div style="margin-bottom:4px;font-size:11px;color:#555"><b>Tax / VAT Note:</b> Destination Tax / VAT as per country rules (calculated per seller settings).</div>
+<h4 style="color:#1a7f37;font-size:15px;margin:4px 0">Grand Total: <span id="cartGrandTotal">$ 0</span></h4>
+<button onclick="handleOrderConfirmationClick()" class="btn g" style="padding:8px 16px;font-size:14px">✅ Confirm Order</button>
+</div></div>
+</section>
+
+<!-- Seller / Web Portal Dashboard -->
+<section id="sellerPanel" class="card hidden">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<h3 style="color:#8250df;margin:0;font-size:15px"><span id="dashboardTypeTitle">🏬 Seller Dashboard</span> (ID: <span id="currentSellerIdDisplay" style="color:#d97706"></span>)</h3>
+<button onclick="lockSeller()" class="btn-danger">Lock 🔒</button>
+</div>
+<div id="webUrlDisplayContainer" class="hidden" style="margin-top:6px;font-size:13px;color:#0969da">
+<b>🌐 Associated Web Portal URL:</b> <a id="currentSellerWebsiteLink" href="#" target="_blank" style="color:#0969da;font-weight:bold"></a>
+</div>
+<hr style="margin:12px 0">
+<div style="background:#fff5f5;border:1px solid #feb2b2;color:#9b2c2c;padding:12px;border-radius:6px;margin-bottom:15px;font-size:12px;line-height:1.5">
+<b>⚠️ Important Legal Disclaimer (Applicable to Vendors/Websites):</b><br>
+Selling any illegal, counterfeit, banned, or socially harmful items is strictly prohibited under our Global Multi-Vendor Terms. <b>The individual seller/website owner shall be solely responsible</b> for compliance, product quality, and local tax laws; <span class="dynamicShopNameText">Juwel Online Shop</span> platform authority holds no liability whatsoever.
+</div>
+<button onclick="openClearanceModal()" class="btn g" style="font-size:12px">💳 Auto Pay Commission to Unlock Order</button>
+</section>
+
+<section id="adminPanel" class="card hidden">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<h3 style="color:#1a7f37;margin:0;font-size:15px">📊 Main Admin Dashboard (<span id="adminRoleDisplay" style="color:#d97706">Staff</span>) - <span id="currentAdminNameDisplay" style="color:#0969da"></span></h3>
+<button onclick="lockAdmin()" class="btn-danger">Lock 🔒</button>
+</div><hr style="margin:12px 0">
+
+<div id="masterOnlyCards">
+<div class="sec" style="background:#161b22;color:#fff;border:2px solid #58a6ff">
+<h4 style="color:#58a6ff;font-size:14px">⚙️ Advanced Master Control Panel <span style="color:#f85149;font-size:11px">(Terms, 24H Cancel)</span></h4>
+<label style="color:#58a6ff">📜 Terms & Conditions / Platform Policy Editor:</label>
+<textarea id="masterTermsEditor" rows="3" placeholder="এখানে প্ল্যাটফর্মের শর্তাবলী ও নীতিমালা লিখুন..." style="background:#0d1117;color:#fff;border-color:#30363d"></textarea>
+<div style="text-align:right;margin-top:5px"><button onclick="saveMasterTermsPolicy()" class="btn g" style="font-size:10px;padding:5px 12px">💾 Save Terms & Policy</button></div>
+<div style="font-size:11px;margin-top:6px"><b>⏰ 24H Order Auto-Cancel:</b> <span style="color:#3fb950">Active (runs while an admin page is open)</span></div>
+</div>
+<div class="sec" style="background:#f0f7ff;border:2px solid #0969da">
+<h4 style="color:#0969da;font-size:14px">💰 Google AdMob & Monetization Settings <span style="color:#b91c1c;font-size:11px">(🔒 Master Admin Only)</span></h4>
+<div class="grid">
+<div><label>AdMob App ID:</label><input id="injAdmobAppId" placeholder="ca-app-pub-xxxxxxxx~xxxxxxxx"></div>
+<div><label>Opening / Interstitial Ad Unit:</label><input id="injWelcomeUnit" placeholder="ca-app-pub-xxxx/xxxx"></div>
+<div><label>Checkout Order Ad Unit:</label><input id="injCheckoutUnit" placeholder="ca-app-pub-xxxx/xxxx"></div>
+<div><label>Seller Reg Rewarded Ad Unit:</label><input id="injSellerUnit" placeholder="ca-app-pub-xxxx/xxxx"></div>
+</div>
+<div style="text-align:right;margin-top:8px"><button onclick="saveInjectedAdMobConfig()" class="btn g" style="font-size:11px;padding:6px 14px">💾 Save AdMob Configuration</button></div>
+</div>
+</div>
+
+<div id="masterOnlySectionStaffPerformance" class="sec">
+<h4 style="color:#166534">📊 Sub-Admin & Staff Activity Performance Evaluation (%) <span style="color:#b91c1c;font-size:11px">(🔒 Master Only)</span></h4>
+<div id="masterStaffPerformanceAnalyticsContainer" class="box" style="font-size:12px">Calculating staff evaluation metrics...</div>
+</div>
+
+<div id="masterOnlySectionStaff" class="sec">
+<h4 style="color:#166534">👥 Multi-Admin & Staff Management <span style="color:#b91c1c;font-size:11px">(🔒 Master Only)</span></h4>
+<div id="adminStaffDirectoryContainer" class="box">No staff registered.</div>
+</div>
+
+<div class="sec" style="background:#fff5f5;border-color:#feb2b2">
+<h4 style="color:#9b2c2c">🛡️ Admin Activity Audit Logs</h4>
+<div id="adminActivityLogList" class="box" style="border-color:#feb2b2">No activity logs recorded.</div>
+</div>
+</section>
+</div>
+
+<div id="cookieConsentBanner"><div>🍪 We use cookies for platform security.</div><button class="btn g" onclick="handleCookieConsent('accepted')">Accept All</button></div>
+
+<div id="customerOrderAdModal" class="modal"><div class="modal-box">
+<div class="ad-box"><h3>🛒 Mandatory Customer Checkout Ad</h3><div id="custAdTimerDisplay" class="ad-timer">10s</div></div>
+<button id="custFinalConfirmBtn" class="btn g hidden" onclick="executeCustomerOrderAfterAd()">Proceed to Checkout</button>
+</div></div>
+
+<div id="sellerMandatoryRegAdModal" class="modal"><div class="modal-box">
+<div class="ad-box"><h3 id="adModalTitleText">🏬 Mandatory Seller Registration Ad & Training</h3><div id="sellerRegAdTimerDisplay" class="ad-timer">10s</div></div>
+<button id="completeRegAdBtn" class="btn g hidden" onclick="executeSuccessfulSellerRegistration()">Complete Registration</button>
+</div></div>
+
+<!-- Seller & Website Portal Login Modal -->
+<div id="sellerLoginModal" class="modal"><div class="modal-box">
+<h3 style="font-size:16px" id="sellerModalTitleHeader">🏬 Seller Panel Login & Registration</h3>
+<input type="text" id="sellerLoginId" placeholder="Vendor ID or Mobile Number">
+<input type="password" id="sellerLoginPin" placeholder="Secret PIN Code">
+<input type="text" id="regSellerName" placeholder="Shop / Website Name (new registration)">
+<input type="text" id="regSellerNid" placeholder="NID Number (Mandatory)">
+<div id="webUrlInputGroup" class="hidden">
+<input type="text" id="regSellerWebsiteUrl" placeholder="Website URL (e.g., https://myshop.com)">
+</div>
+<button onclick="stageSellerAuthentication()" class="btn p">Login / Register</button>
+<button onclick="closeSellerModal()" class="btn x">Cancel</button>
+</div></div>
+
+<div id="clearanceModal" class="modal"><div class="modal-box">
+<h3 style="color:#8250df;font-size:16px">💳 Auto Merchant Gateway Payment</h3>
+<input type="text" id="inputOrderCode" placeholder="Order ID (e.g. ORD12345)">
+<select id="payChannel"><option value="bKash">bKash Merchant Auto Pay</option><option value="Nagad">Nagad Merchant Auto Pay</option></select>
+<input type="text" id="autoSenderPhoneInput" placeholder="Your Mobile Number">
+<input type="text" id="autoPaymentPinInput" placeholder="Transaction ID (TrxID)">
+<button onclick="executeAutoMerchantPaymentClearance()" class="btn g">🚀 Pay via Auto Gateway & Unlock</button>
+<button onclick="closeClearanceModal()" class="btn x">Cancel</button>
+</div></div>
+
+<div id="pinModal" class="modal"><div class="modal-box">
+<h3 id="adminModalHeadingText" style="font-size:16px">🔒 Secret Admin Panel Login</h3>
+<input type="text" id="adminLoginIdInput" placeholder="User ID or Phone (Master: admin)">
+<input type="password" id="pinInput" placeholder="Secret PIN Code">
+<button onclick="checkSecurityPin()" class="btn g">Unlock</button>
+<button onclick="closeAdminModal()" class="btn x">Return to Main Page</button>
+</div></div>
+
+<script>
+const firebaseConfig={databaseURL:"https://juwel-online-shop-default-rtdb.firebaseio.com/"};
+if(typeof firebase!=='undefined'&&!firebase.apps.length){firebase.initializeApp(firebaseConfig);}
+const database=(typeof firebase!=='undefined')?firebase.database():null;
+
+let loggedInCustomer=null;
+try{loggedInCustomer=JSON.parse(localStorage.getItem('shop_logged_customer'));if(loggedInCustomer)delete loggedInCustomer.pin;}catch(e){}
+let activeSeller=null;
+let currentPortalType='SELLER'; // 'SELLER' or 'WEBSITE'
+let currentAdminUser=null;
+let productsList=[{firebaseKey:'p1',name:'Sample Agro Product',stock:50,sell:500,img:'https://via.placeholder.com/150',sellerId:'Admin'}];
+let cartItems=[],pendingOrders=[],staffMembersList=[],tempSellerDataToRegister=null;
+let isWelcomeAdCompleted=false,isCustomerCheckoutAdCompleted=false,isSellerRegAdCompleted=false;
+
+// ---------- helpers ----------
+const MASTER_PIN_HASH="6a95bbab63d587b596398c4bd7e91a132f24032d2007d107e5ea71967724b092";
+function escapeHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function safeKey(s){return String(s).replace(/[.#$\[\]\/\s]/g,'_');}
+async function sha256Hex(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');}
+async function verifyMasterPin(pin){try{return (await sha256Hex(pin))===MASTER_PIN_HASH;}catch(e){alert("Secure (https) connection required.");return false;}}
+function logAdminActivity(action){if(database&&currentAdminUser)database.ref('adminLogs').push({time:new Date().toLocaleString(),admin:currentAdminUser.username,action:action});}
+function runAdTimer(timerEl,btnEl,secs,done){let t=secs;timerEl.style.display='block';timerEl.innerText=t+'s';btnEl.classList.add('hidden');const i=setInterval(()=>{t--;if(t>0)timerEl.innerText=t+'s';else{clearInterval(i);timerEl.style.display='none';done();btnEl.classList.remove('hidden');}},1000);}
+
+// ---------- 1. Opening ad ----------
+runAdTimer(document.getElementById('welcomeAdTimerDisplay'),document.getElementById('welcomeActionContinueBtn'),10,()=>{isWelcomeAdCompleted=true;});
+function closeGlobalWelcomeModal(){
+ if(!isWelcomeAdCompleted){alert("⚠️ নিয়ম ভঙ্গ করা নিষেধ! ওপেনিং বিজ্ঞাপন সম্পূর্ণ না দেখে এটি বন্ধ করা যাবে না।");return;}
+ document.getElementById('globalWelcomeAdModal').style.display='none';
+}
+
+window.addEventListener('DOMContentLoaded',function(){
+ if(database)initFirebaseListeners();
+ checkCustomerAuthUI();renderProducts();
+ try{if(!localStorage.getItem('cookie_consent'))document.getElementById('cookieConsentBanner').style.display='flex';}catch(e){}
+ openAdminFromHash();
+});
+function openAdminFromHash(){const h=location.hash.toLowerCase();if(h==='#admin')openAdminModal('admin');else if(h==='#subadmin')openAdminModal('subadmin');}
+window.addEventListener('hashchange',openAdminFromHash);
+
+function initFirebaseListeners(){
+ database.ref('orders').on('value',s=>{
+  const data=s.val();pendingOrders=[];
+  if(data){Object.keys(data).forEach(k=>{pendingOrders.unshift({firebaseKey:k,...data[k]});});}
+  calculateStaffPerformanceAnalytics();
+  if(currentAdminUser&&currentAdminUser.role==='Master'&&data){
+   const now=Date.now();
+   Object.keys(data).forEach(k=>{const o=data[k];
+    if(o&&!o.isUnlocked&&o.timestamp&&o.status!=='Cancelled'&&(now-o.timestamp)/3600000>=24){
+     database.ref('orders/'+k).update({status:'Cancelled',cancelReason:'Auto-cancelled: not unlocked within 24h.'});}});
+  }
+ });
+ database.ref('adminStaffList').on('value',s=>{
+  const d=s.val()||{};staffMembersList=[];
+  Object.keys(d).forEach(k=>{staffMembersList.push({key:k,...d[k]});});
+  renderStaffDirectory();calculateStaffPerformanceAnalytics();
+ });
+ database.ref('adminLogs').limitToLast(50).on('value',s=>renderAdminLogs(s.val()));
+ database.ref('admobConfig').on('value',s=>{const d=s.val()||{};
+  [['injAdmobAppId','appId'],['injWelcomeUnit','welcomeUnitId'],['injCheckoutUnit','checkoutUnitId'],['injSellerUnit','sellerUnitId']].forEach(p=>{const e=document.getElementById(p[0]);if(e)e.value=d[p[1]]||'';});});
+ database.ref('platformSettings/termsPolicy').on('value',s=>{const e=document.getElementById('masterTermsEditor');if(e)e.value=s.val()||'';});
+}
+
+function renderStaffDirectory(){
+ const c=document.getElementById('adminStaffDirectoryContainer');if(!c)return;
+ if(!staffMembersList.length){c.innerHTML="No staff registered.";return;}
+ c.innerHTML=staffMembersList.map(s=>`<div style="border-bottom:1px dashed #bbf7d0;padding:4px 0"><b>${escapeHtml(s.name)}</b> (${escapeHtml(s.username)}) - ${escapeHtml(s.role)}</div>`).join('');
+}
+function renderAdminLogs(d){
+ const c=document.getElementById('adminActivityLogList');if(!c)return;
+ if(!d){c.innerHTML="No activity logs recorded.";return;}
+ c.innerHTML=Object.keys(d).reverse().map(k=>`<div style="border-bottom:1px dashed #feb2b2;padding:3px 0">🕒 ${escapeHtml(d[k].time)} — <b>${escapeHtml(d[k].admin)}</b>: ${escapeHtml(d[k].action)}</div>`).join('');
+}
+
+function calculateStaffPerformanceAnalytics(){
+ const c=document.getElementById('masterStaffPerformanceAnalyticsContainer');if(!c)return;
+ const map={};
+ pendingOrders.forEach(o=>{if(o.processedByStaff)map[o.processedByStaff]=(map[o.processedByStaff]||0)+1;});
+ if(!staffMembersList.length){c.innerHTML="No sub-admins or staff members registered yet.";return;}
+ const total=pendingOrders.length>0?pendingOrders.length:1;
+ c.innerHTML=staffMembersList.map(st=>{
+  const n=map[st.username]||map[st.name]||0,pc=((n/total)*100).toFixed(1);
+  return `<div style="border-bottom:1px dashed #bbf7d0;padding:6px 0;display:flex;justify-content:space-between;align-items:center"><div><b>${escapeHtml(st.name)}</b> (${escapeHtml(st.username)}) - Role: <b style="color:${st.role==='Master'?'#b91c1c':'#0284c7'}">${escapeHtml(st.role)}</b><br><small style="color:#555">Processed Actions: ${n} orders</small></div><div style="text-align:right"><b style="font-size:14px;color:#166534">${pc}%</b> Activity Share</div></div>`;
+ }).join('');
+}
+
+// ---------- 2. Customer ----------
+async function authenticateCustomer(){
+ const name=document.getElementById('authCustName').value.trim(),phone=document.getElementById('authCustPhone').value.trim(),
+  pin=document.getElementById('authCustPin').value.trim(),address=document.getElementById('authCustAddress').value.trim(),
+  country=document.getElementById('authCustCountry').value;
+ if(!phone||!pin){alert("Mobile and PIN required.");return;}
+ if(!database){alert("Database not connected.");return;}
+ try{
+  const key=safeKey(phone),pinHash=await sha256Hex(pin);
+  const snap=await database.ref('customers/'+key).once('value');
+  let c=snap.val();
+  if(c){if((c.pinHash||'')!==pinHash){alert("❌ ভুল PIN!");return;}}
+  else{
+   if(!name||!address){alert("নতুন রেজিস্ট্রেশনের জন্য নাম ও ঠিকানা দিন।");return;}
+   c={name,phone,address,country,custId:"CUST-"+Math.floor(10000+Math.random()*90000),pinHash};
+   await database.ref('customers/'+key).set(c);
+  }
+  loggedInCustomer={name:c.name,phone:c.phone,custId:c.custId,address:c.address};
+  localStorage.setItem('shop_logged_customer',JSON.stringify(loggedInCustomer));
+  checkCustomerAuthUI();alert("Login Success! Customer ID: "+c.custId);
+ }catch(e){alert("Login error: "+e.message);}
+}
+function logoutCustomer(){loggedInCustomer=null;localStorage.removeItem('shop_logged_customer');checkCustomerAuthUI();}
+function checkCustomerAuthUI(){
+ const on=!!loggedInCustomer;
+ document.getElementById('custLoginForm').classList.toggle('hidden',on);
+ document.getElementById('custDashboard').classList.toggle('hidden',!on);
+ if(on){document.getElementById('loggedInCustName').innerText=loggedInCustomer.name;document.getElementById('loggedInCustIdDisplay').innerText=loggedInCustomer.custId;}
+}
+function renderProducts(){
+ const c=document.getElementById('productCatalog');c.innerHTML="";
+ productsList.forEach((p,i)=>{c.innerHTML+=`<div class="product-display-card"><img src="${escapeHtml(p.img)}"><h4>${escapeHtml(p.name)}</h4><p>Price: $${escapeHtml(p.sell)}</p><button onclick="addToCart(${i})" class="btn b" style="padding:5px 10px">Add to Cart</button></div>`;});
+}
+function addToCart(i){const p=productsList[i];cartItems.push({name:p.name,sell:p.sell,qty:1,sellerId:p.sellerId});renderCart();alert("Added to cart!");}
+function renderCart(){
+ const b=document.getElementById('cartTableBody');b.innerHTML="";
+ if(!cartItems.length){b.innerHTML=`<tr><td colspan="5" style="text-align:center">Cart is empty.</td></tr>`;document.getElementById('cartGrandTotal').innerText="$0";return;}
+ let t=0;
+ cartItems.forEach((it,i)=>{t+=it.sell*it.qty;b.innerHTML+=`<tr><td>${escapeHtml(it.name)}</td><td>${it.qty}</td><td>$${it.sell}</td><td>$${it.sell*it.qty}</td><td><button onclick="cartItems.splice(${i},1);renderCart();" class="btn-danger">❌</button></td></tr>`;});
+ document.getElementById('cartGrandTotal').innerText="$"+t;
+}
+function handleOrderConfirmationClick(){
+ if(!loggedInCustomer){alert("Please login first.");return;}
+ if(!cartItems.length){alert("Your cart is empty!");return;}
+ isCustomerCheckoutAdCompleted=false;
+ document.getElementById('customerOrderAdModal').style.display='flex';
+ runAdTimer(document.getElementById('custAdTimerDisplay'),document.getElementById('custFinalConfirmBtn'),10,()=>{isCustomerCheckoutAdCompleted=true;});
+}
+function executeCustomerOrderAfterAd(){
+ if(!isCustomerCheckoutAdCompleted){alert("⚠️ সিকিউরিটি অ্যালার্ট: বিজ্ঞাপন সম্পূর্ণ না দেখে অর্ডার সাবমিট করা অসম্ভব!");return;}
+ document.getElementById('customerOrderAdModal').style.display='none';
+ const id="ORD"+Math.floor(10000+Math.random()*90000),total=cartItems.reduce((s,i)=>s+(i.sell*i.qty),0);
+ const order={orderCode:id,time:new Date().toLocaleString(),timestamp:Date.now(),name:loggedInCustomer.name,phone:loggedInCustomer.phone,address:loggedInCustomer.address,items:cartItems,totalEarn:total,commission:total*0.05,isUnlocked:false};
+ if(database){database.ref('orders').push(order).then(()=>{alert("✅ অর্ডার সফলভাবে প্লেস হয়েছে!\nঅর্ডার আইডি: "+id);cartItems=[];renderCart();});}
+}
+
+// ---------- 3. Seller & Website Portal ----------
+function openSellerModal(type){
+ currentPortalType=type||'SELLER';
+ const isWeb=(currentPortalType==='WEBSITE');
+ document.getElementById('sellerModalTitleHeader').innerText=isWeb?"🌐 Website Portal Login & Registration":"🏬 Seller Panel Login & Registration";
+ document.getElementById('webUrlInputGroup').classList.toggle('hidden',!isWeb);
+ document.getElementById('sellerLoginModal').style.display='flex';
+}
+function closeSellerModal(){document.getElementById('sellerLoginModal').style.display='none';}
+
+async function stageSellerAuthentication(){
+ const input=document.getElementById('sellerLoginId').value.trim(),pin=document.getElementById('sellerLoginPin').value.trim(),
+  sellerName=document.getElementById('regSellerName').value.trim(),nid=document.getElementById('regSellerNid').value.trim(),
+  webUrl=document.getElementById('regSellerWebsiteUrl').value.trim();
+ if(!input||!pin){alert("Please enter ID and PIN.");return;}
+ if(!database){alert("Database not connected.");return;}
+ const isWeb=(currentPortalType==='WEBSITE');
+ const dbPath=isWeb?'websites/':'sellers/';
+ try{
+  const pinHash=await sha256Hex(pin);
+  let fk=null,fd=null;
+  const s=await database.ref(dbPath+safeKey(input.toUpperCase())).once('value');
+  if(s.exists()){fk=s.key;fd=s.val();}
+  else{const q=await database.ref(dbPath).orderByChild('phone').equalTo(input).once('value');q.forEach(ch=>{fk=ch.key;fd=ch.val();});}
+  if(!fk){
+   if(!nid){alert("⚠️ NID নম্বর বাধ্যতামূলক!");return;}
+   if(isWeb&&!webUrl){alert("⚠️ ওয়েবসাইট লিঙ্ক ইউআরএল বাধ্যতামূলক!");return;}
+   tempSellerDataToRegister={inputIdOrPhone:input,pinHash,sellerName,nidNumber:nid,websiteUrl:webUrl,type:currentPortalType};
+   closeSellerModal();isSellerRegAdCompleted=false;
+   document.getElementById('adModalTitleText').innerText=isWeb?"🌐 Mandatory Web Portal Registration Ad":"🏬 Mandatory Seller Registration Ad";
+   document.getElementById('sellerMandatoryRegAdModal').style.display='flex';
+   runAdTimer(document.getElementById('sellerRegAdTimerDisplay'),document.getElementById('completeRegAdBtn'),10,()=>{isSellerRegAdCompleted=true;});
+   return;
+  }
+  const ok=fd.pinHash?fd.pinHash===pinHash:fd.pin===pin;
+  if(!ok){alert("❌ ভুল PIN!");return;}
+  if(fd.isApproved===false){alert("আপনার অ্যাকাউন্ট এখনও অনুমোদিত হয়নি।");return;}
+  closeSellerModal();completeSellerLogin(fk,fd);
+ }catch(e){alert("Login error: "+e.message);}
+}
+
+function executeSuccessfulSellerRegistration(){
+ if(!isSellerRegAdCompleted){alert("⚠️ সিকিউরিটি অ্যালার্ট: রেজিস্ট্রেশন ট্রেনিং ভিডিও না দেখে এগিয়ে যাওয়া সম্ভব নয়!");return;}
+ document.getElementById('sellerMandatoryRegAdModal').style.display='none';
+ const t=tempSellerDataToRegister;if(!t)return;
+ tempSellerDataToRegister=null;
+ const isWeb=(t.type==='WEBSITE');
+ const idPrefix=isWeb?"WEB-":"SELLER-";
+ const dbPath=isWeb?'websites/':'sellers/';
+ const id=idPrefix+Math.floor(10000+Math.random()*90000);
+ const dataPayload={pinHash:t.pinHash,phone:t.inputIdOrPhone,sellerName:t.sellerName,nidNumber:t.nidNumber,isApproved:true,portalType:t.type};
+ if(isWeb)dataPayload.websiteUrl=t.websiteUrl;
+
+ database.ref(dbPath+id).set(dataPayload)
+  .then(()=>{completeSellerLogin(id,dataPayload);alert("🎉 " +(isWeb?"ওয়েবসাইট":"সেলার")+" রেজিস্ট্রেশন সফল হয়েছে! আইডি: "+id);})
+  .catch(e=>alert("Error: "+e.message));
+}
+
+function completeSellerLogin(id,data){
+ activeSeller={id:id,...data};
+ const isWeb=(data&&data.portalType==='WEBSITE')||id.startsWith('WEB-');
+ document.getElementById('publicSalesPage').classList.add('hidden');
+ document.getElementById('sellerPanel').classList.remove('hidden');
+ document.getElementById('currentSellerIdDisplay').innerText=id;
+ document.getElementById('dashboardTypeTitle').innerText=isWeb?"🌐 Website Portal Dashboard":"🏬 Seller Dashboard";
+ 
+ const webBox=document.getElementById('webUrlDisplayContainer');
+ if(isWeb&&data&&data.websiteUrl){
+  webBox.classList.remove('hidden');
+  const a=document.getElementById('currentSellerWebsiteLink');
+  a.href=data.websiteUrl;a.innerText=data.websiteUrl;
+ }else{webBox.classList.add('hidden');}
+}
+
+function lockSeller(){activeSeller=null;document.getElementById('sellerPanel').classList.add('hidden');document.getElementById('publicSalesPage').classList.remove('hidden');}
+function openClearanceModal(){document.getElementById('clearanceModal').style.display='flex';}
+function closeClearanceModal(){document.getElementById('clearanceModal').style.display='none';}
+
+async function executeAutoMerchantPaymentClearance(){
+ const code=document.getElementById('inputOrderCode').value.trim(),channel=document.getElementById('payChannel').value,
+  phone=document.getElementById('autoSenderPhoneInput').value.trim(),trx=document.getElementById('autoPaymentPinInput').value.trim();
+ if(!activeSeller&&!currentAdminUser){alert("সেলার/ওয়েবসাইট বা অ্যাডমিন হিসেবে লগইন করুন।");return;}
+ if(!code||!phone||!trx){alert("Order ID, Mobile ও Transaction ID দিন।");return;}
+ const m=pendingOrders.find(o=>o.orderCode&&o.orderCode.toLowerCase()===code.toLowerCase());
+ if(!m){alert("Order not found!");return;}
+ if(m.isUnlocked){alert("এই অর্ডার ইতিমধ্যে আনলক করা আছে।");return;}
+ if(activeSeller&&!currentAdminUser&&!(m.items||[]).some(i=>i.sellerId===activeSeller.id)){alert("এই অর্ডারটি আপনার নয়।");return;}
+ try{
+  const r=await fetch('/.netlify/functions/verify-payment',{method:'POST',headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({orderKey:m.firebaseKey,channel:channel,trxId:trx,senderPhone:phone,staff:currentAdminUser?currentAdminUser.username:'System'})});
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok||!d.ok){alert("❌ পেমেন্ট যাচাই হয়নি: "+(d.error||("Server "+r.status)));return;}
+  logAdminActivity('Unlocked order '+m.orderCode);
+  alert("✅ পেমেন্ট যাচাই সফল এবং অর্ডার আনলক করা হয়েছে!");closeClearanceModal();
+ }catch(e){alert("❌ নেটলিফাই ব্যাকএন্ডে সংযোগ হয়নি: "+e.message);}
+}
+
+// ---------- 4. Admin ----------
+function openAdminModal(mode){
+ document.getElementById('adminModalHeadingText').innerText=(mode==='subadmin')?"🔒 Secret Sub-Admin / Staff Panel Login":"🔒 Secret Admin Panel Login";
+ document.getElementById('pinModal').style.display='flex';
+}
+function closeAdminModal(){document.getElementById('pinModal').style.display='none';}
+async function checkSecurityPin(){
+ const id=document.getElementById('adminLoginIdInput').value.trim().toLowerCase(),pin=document.getElementById('pinInput').value.trim();
+ if(!pin){alert("PIN দিন।");return;}
+ if((id===''||id==='admin')&&await verifyMasterPin(pin)){
+  currentAdminUser={name:"Master Admin",username:"admin",role:"Master"};
+ }else{
+  const ph=await sha256Hex(pin).catch(()=>null);
+  const st=staffMembersList.find(s=>(String(s.username).toLowerCase()===id||String(s.phone)===id)&&(s.pinHash?s.pinHash===ph:(s.pin&&String(s.pin)===pin)));
+  if(!st){alert("❌ ভুল ইউজার আইডি বা PIN!");return;}
+  currentAdminUser={name:st.name,username:st.username,role:st.role||'Staff'};
+ }
+ document.getElementById('pinInput').value='';
+ finalizeAdminLogin();logAdminActivity('Logged in');
+}
+function finalizeAdminLogin(){
+ closeAdminModal();
+ document.getElementById('publicSalesPage').classList.add('hidden');
+ document.getElementById('sellerPanel').classList.add('hidden');
+ document.getElementById('adminPanel').classList.remove('hidden');
+ document.getElementById('currentAdminNameDisplay').innerText=currentAdminUser.name;
+ document.getElementById('adminRoleDisplay').innerText=currentAdminUser.role;
+ applyAdminRolePermissions();
+}
+function applyAdminRolePermissions(){
+ const m=(currentAdminUser&&currentAdminUser.role==='Master');
+ ['masterOnlySectionStaffPerformance','masterOnlySectionStaff','masterOnlyCards'].forEach(i=>{const e=document.getElementById(i);if(e)e.style.display=m?'block':'none';});
+}
+function lockAdmin(){
+ logAdminActivity('Logged out');currentAdminUser=null;
+ document.getElementById('adminPanel').classList.add('hidden');
+ document.getElementById('publicSalesPage').classList.remove('hidden');
+}
+async function requireMaster(msg){
+ if(currentAdminUser&&currentAdminUser.role==='Master')return true;
+ const p=prompt(msg);
+ if(!p||!(await verifyMasterPin(p))){alert("❌ ভুল পিন!");return false;}
+ return true;
+}
+async function saveInjectedAdMobConfig(){
+ if(!(await requireMaster("🔒 এটি মাস্টার অ্যাডমিনের কাজ। সিকিউরিটি পিন দিন:")))return;
+ const v=id=>document.getElementById(id).value.trim();
+ const payload={appId:v('injAdmobAppId'),welcomeUnitId:v('injWelcomeUnit'),checkoutUnitId:v('injCheckoutUnit'),sellerUnitId:v('injSellerUnit'),updatedAt:new Date().toLocaleString()};
+ if(database)database.ref('admobConfig').set(payload).then(()=>{logAdminActivity('Updated AdMob config');alert("✅ Google AdMob লিঙ্ক ও আইডি সফলভাবে সেভ হয়েছে!");}).catch(e=>alert("❌ সেভ করতে সমস্যা হয়েছে: "+e.message));
+}
+async function saveMasterTermsPolicy(){
+ if(!(await requireMaster("🔒 শর্তাবলী পরিবর্তন করতে মাস্টার পিন দিন:")))return;
+ const t=document.getElementById('masterTermsEditor').value.trim();
+ if(database)database.ref('platformSettings/termsPolicy').set(t).then(()=>{logAdminActivity('Updated terms & policy');alert("✅ টার্মস অ্যান্ড পলিসি সফলভাবে সেভ হয়েছে!");});
+}
+
+function changeCurrency(v){alert("Currency changed to "+v);}
+function downloadAppApk(){alert("APK download triggered.");}
+function handleCookieConsent(v){try{localStorage.setItem('cookie_consent',v);}catch(e){}document.getElementById('cookieConsentBanner').style.display='none';}
+
+window.AdminSecurityController={
+ openGoogleSecurity:function(){window.open("https://console.cloud.google.com/apis/credentials",'_blank');},
+ openSearchConsole:function(){window.open("https://search.google.com/search-console",'_blank');}
+};
+window.NetlifyPaymentController={
+ endpoint:"/.netlify/functions/get-payment-config",
+ fetchPaymentGateway:async function(){
+  try{const r=await fetch(this.endpoint,{method:'GET',headers:{'Content-Type':'application/json'}});
+   if(!r.ok)throw new Error("Server status: "+r.status);return await r.json();}
+  catch(e){console.error("Netlify Payment Gateway Fetch Error:",e);return null;}
+ }
+};
+</script>
+<script>
+(function(){
+ function init(){
+  var addr=document.getElementById('authCustAddress');
+  if(!addr||document.getElementById('addrSearchBox'))return;
+  addr.insertAdjacentHTML('afterend',
+   '<div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">'+
+   '<button type="button" id="addrMyLocBtn" class="btn p">📍 আমার লোকেশন</button>'+
+   '<input type="text" id="addrSearchBox" placeholder="ঠিকানা সার্চ করুন (সারা বিশ্ব)" class="cust-in">'+
+   '<button type="button" id="addrSearchBtn" class="btn b">🔍 সার্চ</button></div>'+
+   '<div id="addrResults" style="margin-bottom:8px"></div>');
+
+  var box=document.getElementById('addrResults'),found=[];
+  function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function setAddress(t){addr.value=t;box.innerHTML='';}
+  function geo(url){
+   return fetch(url,{headers:{'Accept-Language':navigator.language||'en'}}).then(function(r){
+    if(!r.ok)throw new Error('Location service error '+r.status);return r.json();});
+  }
+
+  document.getElementById('addrMyLocBtn').addEventListener('click',function(){
+   if(!navigator.geolocation){alert("এই ব্রাউজারে লোকেশন সাপোর্ট নেই।");return;}
+   navigator.geolocation.getCurrentPosition(function(p){
+    var la=p.coords.latitude,lo=p.coords.longitude;
+    geo('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat='+la+'&lon='+lo)
+     .then(function(d){setAddress(d.display_name||(la+", "+lo));})
+     .catch(function(){setAddress(la+", "+lo);});
+   },function(){alert("লোকেশনের অনুমতি দিন।");},{enableHighAccuracy:true,timeout:15000});
+  });
+
+  document.getElementById('addrSearchBtn').addEventListener('click',function(){
+   var q=document.getElementById('addrSearchBox').value.trim();
+   if(q.length<3){alert("কমপক্ষে ৩ অক্ষর লিখুন।");return;}
+   box.innerHTML="Searching...";
+   geo('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&q='+encodeURIComponent(q))
+    .then(function(list){
+     if(!list.length){box.innerHTML="কিছু পাওয়া যায়নি।";return;}
+     found=list.map(function(x){return x.display_name;});
+     box.innerHTML=found.map(function(t,i){
+      return '<div data-i="'+i+'" style="padding:6px;border:1px solid #bbe1fa;background:#fff;cursor:pointer;font-size:12px;margin-bottom:3px">📍 '+esc(t)+'</div>';
+     }).join('');
+    })
+    .catch(function(e){box.innerHTML="Search failed: "+esc(e.message);});
+  });
+
+  box.addEventListener('click',function(e){
+   var el=e.target.closest('[data-i]');
+   if(el)setAddress(found[+el.getAttribute('data-i')]);
+  });
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+<script>
+async function verifyMasterPin(pin){
+ try{
+  const r=await fetch('/.netlify/functions/admin-login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pin:pin})});
+  const d=await r.json();
+  return r.ok&&d.ok===true;
+ }catch(e){alert("সার্ভারে সংযোগ হয়নি।");return false;}
+}
+</script>
+</body>
+</html>
